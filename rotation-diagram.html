@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .cont {
+      width:1130px;
+      height: 300px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }	
+		.imgbox a {
+      position: absolute;
+      left:1130px;
+      top:0;
+    }
+		.imgbox a:nth-child(1) {
+      left:0;
+    }
+		.imgbox a img {
+      width: 1130px;
+      height: 300px;
+      display: block;
+    }
+		.btns input {
+      width:50px;
+      height:50px;
+      border: none;
+      background: rgba(200,200,200,0.6);
+      position: absolute;
+      top:125px;
+      z-index: 999;
+    }
+		#left {
+      left:0;
+    }
+		#right {
+      right:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="cont">
+    <div class="imgbox">
+      <a href=""><img src="./img/1.jpg"/></a>
+      <a href=""><img src="./img/2.jpg"/></a>
+      <a href=""><img src="./img/3.jpg"/></a>
+      <a href=""><img src="./img/4.jpg"/></a>
+      <a href=""><img src="./img/5.jpg"/></a>
+    </div>
+    <div class="btns">
+      <input type="button" name="" id="left" value="<<<"/>
+      <input type="button" name="" id="right" value=">>>"/>
+    </div>
+  </div>  
+</body>
+<script src="move.js"></script>
+<script>
+  // OOA:分析：轮播图：点击时，切换图片
+          // 1.有点击元素，获取元素
+          // 2.绑定点击事件
+          // 3.计算索引
+          // 4.根据索引，显示图片
+          // 5.显示图片
+
+  // OOD:设计：关系
+  function Banner(){
+//			1.获取元素
+			this.left = document.getElementById("left")
+			this.right = document.getElementById("right")
+			this.imgbox = document.querySelector(".imgbox")
+			this.img = this.imgbox.children;
+			
+//			要进来的,其实就是当前索引
+			this.index = 0;
+//			要走的：其实就是上一张索引
+			this.iPrev = this.img.length-1;
+
+//			2.绑定事件
+			this.addEvent();
+		}
+			Banner.prototype.addEvent = function(){
+			var that = this;
+//			事件
+			this.left.onclick = function(){
+//				3.计算索引
+				that.changeIndexLeft()
+			}
+			this.right.onclick = function(){
+//				3.计算索引
+				that.changeIndexRight()
+			}
+		}
+		Banner.prototype.changeIndexLeft = function(){
+			if(this.index == 0){
+				this.index = this.img.length-1;
+				this.iPrev = 0;
+			}else{
+				this.index--;
+				this.iPrev = this.index+1;
+			}
+			this.displayLeft();
+		}
+		Banner.prototype.changeIndexRight = function(){
+//			计算
+			if(this.index == this.img.length - 1){
+				this.index = 0;
+				this.iPrev = this.img.length-1;
+			}else{
+				this.index++;
+				this.iPrev = this.index - 1;
+			}
+//			4.根据索引显示图片
+			this.displayRight();
+		}
+		Banner.prototype.displayLeft = function(){
+//			要走的
+//			从哪走
+			this.img[this.iPrev].style.left = 0;
+//			走到哪
+			move(this.img[this.iPrev],{left:this.img[0].offsetWidth})
+			
+//			要进来的
+//			从哪进来
+			this.img[this.index].style.left = -this.img[0].offsetWidth + "px";
+//			进到哪
+			move(this.img[this.index],{left:0})
+		}
+		Banner.prototype.displayRight = function(){
+//			要走的
+//			从哪走
+			this.img[this.iPrev].style.left = 0;
+//			走到哪
+			move(this.img[this.iPrev],{left:-this.img[0].offsetWidth})
+			
+//			要进来的
+//			从哪进来
+			this.img[this.index].style.left = this.img[0].offsetWidth + "px";
+//			进到哪
+			move(this.img[this.index],{left:0})
+		}
+//		最后一步：启动
+			new Banner();
+</script>
+</html>
